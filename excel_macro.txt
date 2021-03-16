@@ -1,0 +1,111 @@
+' 2021-01-30
+'Do the statistics as required
+Sub createNodes()
+  Dim i As Long, ii As Long
+  Dim j As Long
+  Dim k As Long
+  Dim n1 As Long
+  Dim n2 As Long
+  Dim name As String
+  Dim fileName As String
+  Dim solverName As String, userName As String, solution As String
+  
+  'Used to define the Range to clear
+  Dim maxRowIndex As Long
+  Dim maxColIndex As Long
+  Dim datetime As Variant
+   
+  'Activates the events worksheet
+  'name = "events"
+  'Worksheets(name).Activate
+  
+  'Clears the obsolete data
+  maxRowlIndex = findMaxRowIndex(ActiveSheet, 1)
+  
+  ii = 2
+  fileName = "D:\neo4j\python\script.txt"
+           
+  Open fileName For Output As #1 'Creates a new file
+  Print #1, vbCrLf;
+   
+  With ActiveWorkbook.ActiveSheet
+   For i = 1 To maxRowlIndex - 1
+      'userName = removeWhitespace(.Cells(i + 1, 2).Value)
+      userName = .Cells(i + 1, 2).Value
+      solverName = findSolverName(.Cells(i + 1, 5).Value)
+      'eventName = removeWhitespace(.Cells(i + 1, 3).Value)
+      eventName = .Cells(i + 1, 3).Value
+      solution = removeCarriageReturn(.Cells(i + 1, 5).Value)
+      solution = forceDoubleSlash(solution)
+      datetime = Format(.Cells(i + 1, 12), "yyyy-mm-dd hh:MM:ss")
+      
+      Print #1, "MERGE (p1:Person {name:'" + userName _
+                ; "'}) MERGE (p2:Person {name: '" + solverName _
+                ; "'}) MERGE (ev:Event { id:'" + Cells(i + 1, 1).Value _
+                ; "',created_at:'" + datetime _
+                ; "',name:'" + eventName _
+                ; "',detail:'" + removeCarriageReturn(.Cells(i + 1, 4).Value) _
+                ; "',solution:'" + solution _
+                ; "'}) MERGE (p1)-[:STARTED {roles:['User']}]->(ev) MERGE (p2)-[:SOLVED {roles:['Engineer']}]->(ev)" _
+                ; vbCrLf;
+
+    Next
+  End With
+  
+  Close #1
+
+End Sub
+Function findSolverName(str As String) As String
+  Dim solvers(2) As Variant '0-indexed, serveral enigineers solve the the same problem
+  
+  findSolverName = "张三"
+  
+  If InStr(str, "（李四）") > 0 Then
+    findSolverName = "李四"
+  ElseIf InStr(str, "（王五）") > 0 Or InStr(str, "（五）") > 0 Then
+    findSolverName = "王五"
+  End If
+End Function
+Function removeWhitespace(str As String) As String
+  str = Replace(str, " ", "")
+  str = Replace(str, "(", "")
+  str = Replace(str, ")", "")
+  str = Replace(str, "（", "")
+  str = Replace(str, "）", "")
+  str = Replace(str, "，", "")
+  
+  removeWhitespace = str
+End Function
+Function removeCarriageReturn(str As String) As String
+  str = Replace(str, Chr(10), "")
+  removeCarriageReturn = str
+End Function
+Function forceDoubleSlash(str As String) As String
+  str = Replace(str, "\", "\\")
+  forceDoubleSlash = str
+End Function
+
+'Finds the max row index of a given column & returns it
+Function findMaxRowIndex(sheet As Worksheet, columnIndex As Long) As Long
+  Dim s1 As String
+  Dim maxRowIndex As Long
+
+  maxRowIndex = 1 'Initialization
+  s1 = sheet.Cells(maxRowIndex, columnIndex)
+  s1 = WorksheetFunction.Substitute(s1, " ", "") 'delete whitespaces
+  Do While s1 <> ""
+    maxRowIndex = maxRowIndex + 1
+    s1 = sheet.Cells(maxRowIndex, columnIndex)
+    s1 = WorksheetFunction.Substitute(s1, " ", "") 'delete whitespaces
+  Loop
+  maxRowIndex = maxRowIndex - 1
+  
+  'Returns the max row index
+  findMaxRowIndex = maxRowIndex
+End Function
+'
+Sub test_findMaxRowIndex()
+   Dim index As Integer
+   index = findMaxRowIndex(Worksheets("events"), 1)
+End Sub
+
