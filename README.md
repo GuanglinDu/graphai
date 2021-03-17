@@ -1,2 +1,2 @@
 # graphai
-Graph-native AI
+Graph-native AI examples and the related code.
