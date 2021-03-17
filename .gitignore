@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Output files ofr nonlinear_regression.py
+trainresults.csv
+valresults.csv

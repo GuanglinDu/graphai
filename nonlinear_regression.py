@@ -2,7 +2,7 @@
 # NON-LINEAR REGRESSION WITH DEEP LEARNING 
 # https://medium.com/analytics-vidhya/non-linear-regression-with-deep-learning-221584ccc8c2
 # python -m venv --system-site-packages .\venv
-# pip install --upgrade keras, sklearn, matplotlib, pandas
+# pip install --upgrade keras sklearn matplotlib pandas
 
 # imports
 from keras.models import Sequential
