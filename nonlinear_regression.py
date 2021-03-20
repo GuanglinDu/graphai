@@ -1,7 +1,7 @@
 # Created on Mar 13, 2021
 # NON-LINEAR REGRESSION WITH DEEP LEARNING 
 # https://medium.com/analytics-vidhya/non-linear-regression-with-deep-learning-221584ccc8c2
-# python -m venv --system-site-packages .\venv
+# python -m venv .\venv
 # pip install --upgrade keras sklearn matplotlib pandas
 
 # imports
